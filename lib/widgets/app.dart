@@ -10,22 +10,22 @@ import 'package:keeper/repositories/repositories.dart';
 class App extends StatelessWidget {
   final appConfig = AppConfig();
 
-  App() {
-    final router = Router();
-    Routes.configureRoutes(router);
-    AppConfig.router = router;
-  }
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     final RedisSecretRepository secretRepository =
         RedisSecretRepository(redisURL: 'redis://localhost:6379');
 
+    final router = Router();
+    Routes.configureRoutes(router);
+
     return MultiBlocProvider(
       providers: [
         BlocProvider<AppBloc>(
           create: (context) => AppBloc(appConfig: appConfig),
+        ),
+        BlocProvider<RouterBloc>(
+          create: (context) => RouterBloc(router: router),
         ),
         BlocProvider<SecretBloc>(
           create: (context) => SecretBloc(secretRepository: secretRepository),
@@ -51,7 +51,7 @@ class App extends StatelessWidget {
             elevation: 1.0,
           ),
         ),
-        onGenerateRoute: AppConfig.router.generator,
+        onGenerateRoute: BlocProvider.of<RouterBloc>(context).router.generator,
       ),
     );
   }
