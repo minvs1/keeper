@@ -25,8 +25,8 @@ class Secret extends Equatable {
     return Secret(
       id: id ?? this.id,
       unencryptedSecret: unencryptedSecret ?? this.unencryptedSecret,
-      encryptedSecret: id ?? this.encryptedSecret,
-      password: id ?? this.password,
+      encryptedSecret: encryptedSecret ?? this.encryptedSecret,
+      password: password ?? this.password,
     );
   }
 

@@ -36,7 +36,7 @@ class Home extends StatelessWidget {
                   return AlertDialog(
                     title: Text("Your Secret"),
                     content: SelectableText(
-                      "Your note ID: ${state.secret.id}",
+                      "Your note ID: ${state.secret.id}#${state.secret.password}",
                     ),
                     actions: [
                       FlatButton(
