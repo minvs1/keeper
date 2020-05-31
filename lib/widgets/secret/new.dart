@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:keeper/blocs/blocs.dart';
 import 'package:keeper/models/models.dart';
+import 'package:keeper/widgets/drawer_menu.dart';
+import 'package:keeper/widgets/main_app_bar.dart';
 
-class Home extends StatelessWidget {
+class NewSecret extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -12,20 +14,8 @@ class Home extends StatelessWidget {
         TextEditingController().clear();
       },
       child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text('Keeper'),
-          actions: [
-            IconButton(
-              splashColor: Colors.transparent,
-              hoverColor: Colors.transparent,
-              focusColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              icon: Icon(Icons.storage),
-              onPressed: () {},
-            ),
-          ],
-        ),
+        drawer: DrawerMenu(),
+        appBar: MainAppBar(),
         body: BlocListener<SecretBloc, SecretState>(
           listener: (context, state) {
             if (state is SecretSuccess) {
@@ -34,9 +24,9 @@ class Home extends StatelessWidget {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text("Your Secret"),
+                    title: Text("Secret encrypted & saved!"),
                     content: SelectableText(
-                      "Your note ID: ${state.secret.id}#${state.secret.password}",
+                      "Secret Unlock Key: ${state.secret.id}#${state.secret.password}",
                     ),
                     actions: [
                       FlatButton(
@@ -71,7 +61,7 @@ class SecretForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var theme = Theme.of(context);
+    final theme = Theme.of(context);
 
     return Center(
       child: Container(

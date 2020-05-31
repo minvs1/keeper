@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fluro/fluro.dart';
+import 'package:flutter/material.dart';
+import 'package:keeper/blocs/blocs.dart';
 import 'package:meta/meta.dart';
 
 abstract class RouterEvent extends Equatable {
@@ -11,7 +13,10 @@ abstract class RouterEvent extends Equatable {
 }
 
 class RouterNavigated extends RouterEvent {
-  const RouterNavigated();
+  final BuildContext context;
+  final String path;
+
+  RouterNavigated(this.context, this.path);
 
   @override
   List<Object> get props => [];
@@ -29,6 +34,12 @@ abstract class RouterState extends Equatable {
 
 class RouterInitial extends RouterState {}
 
+class RouterSuccess extends RouterState {
+  final String path;
+
+  const RouterSuccess(this.path);
+}
+
 class RouterBloc extends Bloc<RouterEvent, RouterState> {
   final Router router;
 
@@ -39,8 +50,6 @@ class RouterBloc extends Bloc<RouterEvent, RouterState> {
 
   @override
   Stream<RouterState> mapEventToState(RouterEvent event) async* {
-    if (event is RouterNavigated) {
-      print("asdasd111");
-    }
+    if (event is RouterNavigated) {}
   }
 }

@@ -31,27 +31,30 @@ class App extends StatelessWidget {
           create: (context) => SecretBloc(secretRepository: secretRepository),
         ),
       ],
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
-        darkTheme: ThemeData(
-          primaryColor: Colors.purple,
-          accentColor: Colors.white,
-          textSelectionColor: Colors.white24,
-          brightness: Brightness.dark,
-          backgroundColor: Color(0xFF121212),
-          scaffoldBackgroundColor: Color(0xFF121212),
-          cardColor: Color(0xFF121212),
-          canvasColor: Color(0xFF121212),
-          applyElevationOverlayColor: true,
-          appBarTheme: AppBarTheme(
-            color: Color(0xFF121212),
-            elevation: 1.0,
+      child: Builder(
+        builder: (context) => MaterialApp(
+          title: 'Keeper',
+          theme: ThemeData(
+            visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
+          darkTheme: ThemeData(
+            primaryColor: Colors.purple,
+            accentColor: Colors.white,
+            textSelectionColor: Colors.white24,
+            brightness: Brightness.dark,
+            backgroundColor: Color(0xFF121212),
+            scaffoldBackgroundColor: Color(0xFF121212),
+            cardColor: Color(0xFF121212),
+            canvasColor: Color(0xFF121212),
+            applyElevationOverlayColor: true,
+            appBarTheme: AppBarTheme(
+              color: Color(0xFF121212),
+              elevation: 1.0,
+            ),
+          ),
+          onGenerateRoute:
+              BlocProvider.of<RouterBloc>(context).router.generator,
         ),
-        onGenerateRoute: BlocProvider.of<RouterBloc>(context).router.generator,
       ),
     );
   }
