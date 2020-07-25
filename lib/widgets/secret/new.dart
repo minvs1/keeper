@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:keeper/blocs/blocs.dart';
 import 'package:keeper/models/models.dart';
 import 'package:keeper/widgets/drawer_menu.dart';
 import 'package:keeper/widgets/main_app_bar.dart';
 
-class NewSecret extends StatelessWidget {
+class NewSecret extends StatefulWidget {
+  _NewSecret createState() => _NewSecret();
+}
+
+class _NewSecret extends State<NewSecret> {
+  bool _idCopied = false;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -19,14 +26,60 @@ class NewSecret extends StatelessWidget {
         body: BlocListener<SecretBloc, SecretState>(
           listener: (context, state) {
             if (state is SecretSuccess) {
+              final secretID = TextEditingController();
+              secretID.text = "${state.secret.id}#${state.secret.password}";
+
               showDialog(
                 barrierDismissible: false,
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
                     title: Text("Secret encrypted & saved!"),
-                    content: SelectableText(
-                      "Secret Unlock Key: ${state.secret.id}#${state.secret.password}",
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        TextField(
+                          readOnly: true,
+                          controller: secretID,
+                          // cursorColor: theme.accentColor,
+                          decoration: InputDecoration(
+                            labelText: 'Unlock Key',
+                            border: OutlineInputBorder(),
+                            suffixIcon: IconButton(
+                              // icon: Icon(
+                              //   _idCopied ? Icons.done : Icons.content_copy,
+                              // ),
+                              icon: _idCopied
+                                  ? Icon(Icons.done)
+                                  : Icon(Icons.content_copy),
+                              splashColor: Colors.transparent,
+                              onPressed: () {
+                                print(_idCopied);
+                                if (_idCopied) {
+                                  return;
+                                }
+
+                                setState(() {
+                                  _idCopied = true;
+                                });
+
+                                Clipboard.setData(
+                                  new ClipboardData(text: secretID.text),
+                                );
+
+                                Future.delayed(
+                                  Duration(seconds: 1),
+                                  () => setState(
+                                    () {
+                                      _idCopied = false;
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     actions: [
                       FlatButton(

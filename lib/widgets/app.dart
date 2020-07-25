@@ -36,6 +36,8 @@ class App extends StatelessWidget {
           title: 'Keeper',
           theme: ThemeData(
             visualDensity: VisualDensity.adaptivePlatformDensity,
+            primaryColor: Colors.indigo[700],
+            accentColor: Colors.white,
           ),
           darkTheme: ThemeData(
             primaryColor: Colors.purple,

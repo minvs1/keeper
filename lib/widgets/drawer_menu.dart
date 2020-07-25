@@ -27,49 +27,59 @@ class DrawerMenu extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text('Open Secret'),
+            title: Text('Find Secret'),
             onTap: () {
-              showDialog(
-                barrierDismissible: false,
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text("Open Secret"),
-                    content: TextField(
-                      controller: secretController,
-                      cursorColor: theme.accentColor,
-                      textAlignVertical: TextAlignVertical.top,
-                      decoration: InputDecoration(
-                        alignLabelWithHint: true,
-                        labelText: 'Secret Unlock Key',
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    actions: [
-                      FlatButton(
-                        child: Text("Close"),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                      FlatButton(
-                        child: Text("Open"),
-                        onPressed: () {
-                          BlocProvider.of<RouterBloc>(context)
-                              .router
-                              .navigateTo(
-                                context,
-                                "/secrets/${secretController.value}",
-                                transition: TransitionType.fadeIn,
-                              )
-                              .then((value) => Navigator.pop(context));
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
+              BlocProvider.of<RouterBloc>(context)
+                  .router
+                  .navigateTo(
+                    context,
+                    '/secrets',
+                    transition: TransitionType.fadeIn,
+                  )
+                  .then((value) => Navigator.pop(context));
             },
+            // onTap: () {
+            //   showDialog(
+            //     barrierDismissible: false,
+            //     context: context,
+            //     builder: (BuildContext context) {
+            //       return AlertDialog(
+            //         title: Text("Open Secret"),
+            //         content: TextField(
+            //           controller: secretController,
+            //           cursorColor: theme.accentColor,
+            //           textAlignVertical: TextAlignVertical.top,
+            //           decoration: InputDecoration(
+            //             alignLabelWithHint: true,
+            //             labelText: 'Secret Unlock Key',
+            //             border: OutlineInputBorder(),
+            //           ),
+            //         ),
+            //         actions: [
+            //           FlatButton(
+            //             child: Text("Close"),
+            //             onPressed: () {
+            //               Navigator.of(context).pop();
+            //             },
+            //           ),
+            //           FlatButton(
+            //             child: Text("Open"),
+            //             onPressed: () {
+            //               BlocProvider.of<RouterBloc>(context)
+            //                   .router
+            //                   .navigateTo(
+            //                     context,
+            //                     "/secrets/${secretController.value}",
+            //                     transition: TransitionType.fadeIn,
+            //                   )
+            //                   .then((value) => Navigator.pop(context));
+            //             },
+            //           ),
+            //         ],
+            //       );
+            //     },
+            //   );
+            // },
           ),
         ],
       ),

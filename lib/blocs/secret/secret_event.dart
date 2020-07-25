@@ -19,3 +19,15 @@ class SecretEncrypted extends SecretEvent {
   @override
   String toString() => 'SecretEncrypted { secret: $secret }';
 }
+
+class SecretDecrypted extends SecretEvent {
+  final Secret secret;
+
+  const SecretDecrypted(this.secret);
+
+  @override
+  List<Object> get props => [secret];
+
+  @override
+  String toString() => 'SecretDecrypted { secret: $secret }';
+}
