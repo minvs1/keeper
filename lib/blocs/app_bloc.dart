@@ -19,10 +19,9 @@ class AppInitial extends AppState {}
 class AppBloc extends Bloc<AppEvent, dynamic> {
   final AppConfig appConfig;
 
-  AppBloc({@required this.appConfig}) : assert(appConfig != null);
-
-  @override
-  AppState get initialState => AppInitial();
+  AppBloc({@required this.appConfig})
+      : assert(appConfig != null),
+        super(AppInitial());
 
   @override
   Stream<AppState> mapEventToState(AppEvent event) async* {}

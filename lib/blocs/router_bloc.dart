@@ -43,10 +43,9 @@ class RouterSuccess extends RouterState {
 class RouterBloc extends Bloc<RouterEvent, RouterState> {
   final Router router;
 
-  RouterBloc({@required this.router}) : assert(router != null);
-
-  @override
-  RouterState get initialState => RouterInitial();
+  RouterBloc({@required this.router})
+      : assert(router != null),
+        super(RouterInitial());
 
   @override
   Stream<RouterState> mapEventToState(RouterEvent event) async* {

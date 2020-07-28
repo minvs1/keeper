@@ -7,10 +7,8 @@ class SecretBloc extends Bloc<SecretEvent, SecretState> {
   final RedisSecretRepository secretRepository;
 
   SecretBloc({@required this.secretRepository})
-      : assert(secretRepository != null);
-
-  @override
-  SecretState get initialState => SecretInitial();
+      : assert(secretRepository != null),
+        super(SecretInitial());
 
   @override
   Stream<SecretState> mapEventToState(SecretEvent event) async* {
@@ -25,17 +23,18 @@ class SecretBloc extends Bloc<SecretEvent, SecretState> {
     yield SecretInProgress();
     final id = await _saveSecret(event.secret.toEncryptedString());
     final secret = event.secret.copyWith(id: id);
-    yield SecretSuccess(secret);
+    yield SecretEncryptSuccess(secret);
   }
 
   Stream<SecretState> _mapSecretDecryptedToState(SecretDecrypted event) async* {
     yield SecretInProgress();
     // TODO: validate secret and yield error state if invalid
     final secretID = event.secret.id.split("#");
+    print(secretID);
     final encryptedSecret = await _fetchSecret(secretID[0]);
     final secret = event.secret
         .copyWith(encryptedSecret: encryptedSecret, password: secretID[1]);
-    yield SecretSuccess(
+    yield SecretDecryptSuccess(
         secret.copyWith(unencryptedSecret: secret.toUnencryptedString()));
   }
 

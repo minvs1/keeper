@@ -23,10 +23,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  bloc: ^4.0.0
-  flutter_bloc: ^4.0.0
-  equatable: ^1.1.0
-  meta: ^1.1.8
+  bloc: ^6.0.0
+  flutter_bloc: ^6.0.0
+  equatable: ^1.2.3
+  meta: ^1.2.2
   fluro: ^1.6.3
   encrypt: ^4.0.0
   crypto: ^2.1.4

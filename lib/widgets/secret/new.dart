@@ -25,7 +25,7 @@ class _NewSecret extends State<NewSecret> {
         appBar: MainAppBar(),
         body: BlocListener<SecretBloc, SecretState>(
           listener: (context, state) {
-            if (state is SecretSuccess) {
+            if (state is SecretEncryptSuccess) {
               final secretID = TextEditingController();
               secretID.text = "${state.secret.id}#${state.secret.password}";
 
