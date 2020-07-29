@@ -3,8 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluro/fluro.dart';
 import 'package:keeper/blocs/blocs.dart';
 import 'package:keeper/models/models.dart';
-import 'package:keeper/widgets/drawer_menu.dart';
-import 'package:keeper/widgets/main_app_bar.dart';
+import 'package:keeper/widgets/main_layout.dart';
 
 class ShowSecret extends StatefulWidget {
   @override
@@ -20,10 +19,8 @@ class _ShowSecretState extends State<ShowSecret> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
-      drawer: DrawerMenu(),
-      appBar: MainAppBar(),
-      body: BlocListener<SecretBloc, SecretState>(
+    return MainLayout(
+      child: BlocListener<SecretBloc, SecretState>(
         listener: (context, state) {
           if (state is SecretDecryptSuccess) {
             secretController.text = state.secret.unencryptedSecret;
@@ -61,14 +58,9 @@ class _ShowSecretState extends State<ShowSecret> {
                                 textColor: Theme.of(context).primaryColor,
                                 child: Text('GO BACK'),
                                 onPressed: () async {
-                                  BlocProvider.of<RouterBloc>(context)
-                                      .router
-                                      .navigateTo(
-                                        context,
-                                        '/',
-                                        transition: TransitionType.fadeIn,
-                                      )
-                                      .then((value) => Navigator.pop(context));
+                                  context
+                                      .bloc<RouterBloc>()
+                                      .add(RouterNavigated(context, '/'));
                                 },
                               ),
                             ),
@@ -112,13 +104,21 @@ class _ShowSecretState extends State<ShowSecret> {
                                     return;
                                   }
 
-                                  BlocProvider.of<SecretBloc>(context).add(
-                                    SecretDecrypted(
-                                      Secret(
-                                        id: secretController.text,
-                                      ),
-                                    ),
-                                  );
+                                  context.bloc<SecretBloc>().add(
+                                        SecretDecrypted(
+                                          Secret(
+                                            id: secretController.text,
+                                          ),
+                                        ),
+                                      );
+
+                                  // BlocProvider.of<SecretBloc>(context).add(
+                                  //   SecretDecrypted(
+                                  //     Secret(
+                                  //       id: secretController.text,
+                                  //     ),
+                                  //   ),
+                                  // );
                                   // BlocProvider.of<SecretBloc>(context).add(
                                   //   SecretEncrypted(
                                   //     Secret(

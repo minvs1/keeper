@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
-import 'package:keeper/blocs/blocs.dart';
 import 'package:meta/meta.dart';
 
 abstract class RouterEvent extends Equatable {
@@ -22,22 +21,20 @@ class RouterNavigated extends RouterEvent {
   List<Object> get props => [];
 
   @override
-  String toString() => 'RouterNavigated {}';
+  String toString() => 'RouterNavigated { path: $path }';
 }
 
-abstract class RouterState extends Equatable {
-  const RouterState();
-
-  @override
-  List<Object> get props => [];
-}
-
-class RouterInitial extends RouterState {}
-
-class RouterSuccess extends RouterState {
+class RouterState extends Equatable {
   final String path;
 
-  const RouterSuccess(this.path);
+  const RouterState({this.path = '/'});
+
+  RouterState copyWith({String path}) {
+    return RouterState(path: path ?? this.path);
+  }
+
+  @override
+  List<Object> get props => [path];
 }
 
 class RouterBloc extends Bloc<RouterEvent, RouterState> {
@@ -45,10 +42,20 @@ class RouterBloc extends Bloc<RouterEvent, RouterState> {
 
   RouterBloc({@required this.router})
       : assert(router != null),
-        super(RouterInitial());
+        super(RouterState());
 
   @override
   Stream<RouterState> mapEventToState(RouterEvent event) async* {
-    if (event is RouterNavigated) {}
+    if (event is RouterNavigated) {
+      router
+          .navigateTo(
+            event.context,
+            event.path,
+            transition: TransitionType.fadeIn,
+          )
+          .then((value) => Navigator.pop(event.context));
+
+      yield RouterState(path: event.path);
+    }
   }
 }

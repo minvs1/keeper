@@ -3,8 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:keeper/blocs/blocs.dart';
 import 'package:keeper/models/models.dart';
-import 'package:keeper/widgets/drawer_menu.dart';
-import 'package:keeper/widgets/main_app_bar.dart';
+import 'package:keeper/widgets/main_layout.dart';
 
 class NewSecret extends StatefulWidget {
   _NewSecret createState() => _NewSecret();
@@ -20,10 +19,8 @@ class _NewSecret extends State<NewSecret> {
         FocusScope.of(context).unfocus();
         TextEditingController().clear();
       },
-      child: Scaffold(
-        drawer: DrawerMenu(),
-        appBar: MainAppBar(),
-        body: BlocListener<SecretBloc, SecretState>(
+      child: MainLayout(
+        child: BlocListener<SecretBloc, SecretState>(
           listener: (context, state) {
             if (state is SecretEncryptSuccess) {
               final secretID = TextEditingController();
@@ -161,13 +158,13 @@ class SecretForm extends StatelessWidget {
                           return;
                         }
 
-                        BlocProvider.of<SecretBloc>(context).add(
-                          SecretEncrypted(
-                            Secret(
-                              unencryptedSecret: secretController.text,
-                            ),
-                          ),
-                        );
+                        context.bloc<SecretBloc>().add(
+                              SecretEncrypted(
+                                Secret(
+                                  unencryptedSecret: secretController.text,
+                                ),
+                              ),
+                            );
 
                         secretController.clear();
                       },
