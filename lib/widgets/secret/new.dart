@@ -10,7 +10,9 @@ class NewSecret extends StatefulWidget {
 }
 
 class _NewSecret extends State<NewSecret> {
+  final secretController = TextEditingController();
   bool _idCopied = false;
+  bool _isEncrypted = false;
 
   @override
   Widget build(BuildContext context) {
@@ -20,75 +22,98 @@ class _NewSecret extends State<NewSecret> {
         TextEditingController().clear();
       },
       child: MainLayout(
+        // child: BlocListener<SecretBloc, SecretState>(
+        //   listener: (context, state) {
+        //     if (state is SecretEncryptSuccess) {
+        //       final secretID = TextEditingController();
+        //       secretID.text = "${state.secret.id}#${state.secret.password}";
+
+        //       showDialog(
+        //         barrierDismissible: false,
+        //         context: context,
+        //         builder: (BuildContext context) {
+        //           return AlertDialog(
+        //             title: Text("Secret encrypted & saved!"),
+        //             content: Column(
+        //               mainAxisSize: MainAxisSize.min,
+        //               children: [
+        //                 TextField(
+        //                   readOnly: true,
+        //                   controller: secretID,
+        //                   // cursorColor: theme.accentColor,
+        //                   decoration: InputDecoration(
+        //                     labelText: 'Unlock Key',
+        //                     border: OutlineInputBorder(),
+        //                     suffixIcon: IconButton(
+        //                       // icon: Icon(
+        //                       //   _idCopied ? Icons.done : Icons.content_copy,
+        //                       // ),
+        //                       icon: _idCopied
+        //                           ? Icon(Icons.done)
+        //                           : Icon(Icons.content_copy),
+        //                       splashColor: Colors.transparent,
+        //                       onPressed: () {
+        //                         print(_idCopied);
+        //                         if (_idCopied) {
+        //                           return;
+        //                         }
+
+        //                         setState(() {
+        //                           _idCopied = true;
+        //                         });
+
+        //                         Clipboard.setData(
+        //                           new ClipboardData(text: secretID.text),
+        //                         );
+
+        //                         Future.delayed(
+        //                           Duration(seconds: 1),
+        //                           () => setState(
+        //                             () {
+        //                               _idCopied = false;
+        //                             },
+        //                           ),
+        //                         );
+        //                       },
+        //                     ),
+        //                   ),
+        //                 ),
+        //               ],
+        //             ),
+        //             actions: [
+        //               FlatButton(
+        //                 child: Text("Close"),
+        //                 onPressed: () {
+        //                   Navigator.of(context).pop();
+        //                 },
+        //               ),
+        //             ],
+        //           );
+        //         },
+        //       );
+        //     }
+        //   },
+        //   child: BlocBuilder<SecretBloc, SecretState>(
+        //     builder: (context, state) {
+        //       if (state is SecretInProgress) {
+        //         return Center(child: CircularProgressIndicator());
+        //       }
+
+        //       return SecretForm();
+        //     },
+        //   ),
+        // ),
         child: BlocListener<SecretBloc, SecretState>(
           listener: (context, state) {
             if (state is SecretEncryptSuccess) {
-              final secretID = TextEditingController();
-              secretID.text = "${state.secret.id}#${state.secret.password}";
+              secretController.text =
+                  "${state.secret.id}#${state.secret.password}";
 
-              showDialog(
-                barrierDismissible: false,
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text("Secret encrypted & saved!"),
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TextField(
-                          readOnly: true,
-                          controller: secretID,
-                          // cursorColor: theme.accentColor,
-                          decoration: InputDecoration(
-                            labelText: 'Unlock Key',
-                            border: OutlineInputBorder(),
-                            suffixIcon: IconButton(
-                              // icon: Icon(
-                              //   _idCopied ? Icons.done : Icons.content_copy,
-                              // ),
-                              icon: _idCopied
-                                  ? Icon(Icons.done)
-                                  : Icon(Icons.content_copy),
-                              splashColor: Colors.transparent,
-                              onPressed: () {
-                                print(_idCopied);
-                                if (_idCopied) {
-                                  return;
-                                }
-
-                                setState(() {
-                                  _idCopied = true;
-                                });
-
-                                Clipboard.setData(
-                                  new ClipboardData(text: secretID.text),
-                                );
-
-                                Future.delayed(
-                                  Duration(seconds: 1),
-                                  () => setState(
-                                    () {
-                                      _idCopied = false;
-                                    },
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    actions: [
-                      FlatButton(
-                        child: Text("Close"),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
+              setState(() {
+                _isEncrypted = true;
+              });
+            } else {
+              // TODO: handle errors
             }
           },
           child: BlocBuilder<SecretBloc, SecretState>(
@@ -97,7 +122,17 @@ class _NewSecret extends State<NewSecret> {
                 return Center(child: CircularProgressIndicator());
               }
 
-              return SecretForm();
+              return SecretForm(
+                  secretController: secretController,
+                  onSubmit: () {
+                    context.bloc<SecretBloc>().add(
+                          SecretEncrypted(
+                            Secret(
+                              unencryptedSecret: secretController.text,
+                            ),
+                          ),
+                        );
+                  });
             },
           ),
         ),
@@ -107,7 +142,10 @@ class _NewSecret extends State<NewSecret> {
 }
 
 class SecretForm extends StatelessWidget {
-  final secretController = TextEditingController();
+  final TextEditingController secretController;
+  final void Function() onSubmit;
+
+  SecretForm({this.secretController, this.onSubmit});
 
   @override
   Widget build(BuildContext context) {
@@ -128,6 +166,7 @@ class SecretForm extends StatelessWidget {
             Expanded(
               child: Container(
                 child: TextField(
+                  readOnly: _isEncrypted,
                   controller: secretController,
                   keyboardType: TextInputType.multiline,
                   cursorColor: theme.accentColor,
@@ -158,13 +197,7 @@ class SecretForm extends StatelessWidget {
                           return;
                         }
 
-                        context.bloc<SecretBloc>().add(
-                              SecretEncrypted(
-                                Secret(
-                                  unencryptedSecret: secretController.text,
-                                ),
-                              ),
-                            );
+                        onSubmit();
 
                         secretController.clear();
                       },

@@ -112,21 +112,6 @@ class _ShowSecretState extends State<ShowSecret> {
                                         ),
                                       );
 
-                                  // BlocProvider.of<SecretBloc>(context).add(
-                                  //   SecretDecrypted(
-                                  //     Secret(
-                                  //       id: secretController.text,
-                                  //     ),
-                                  //   ),
-                                  // );
-                                  // BlocProvider.of<SecretBloc>(context).add(
-                                  //   SecretEncrypted(
-                                  //     Secret(
-                                  //       unencryptedSecret: secretController.text,
-                                  //     ),
-                                  //   ),
-                                  // );
-
                                   secretController.clear();
                                 },
                               ),
