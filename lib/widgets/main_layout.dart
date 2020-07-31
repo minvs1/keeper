@@ -26,7 +26,7 @@ class _MainLayout extends State<MainLayout> {
 
   @override
   Widget build(BuildContext context) {
-    var selectedColor = Theme.of(context).primaryColor;
+    var selectedColor = Colors.white;
 
     return Scaffold(
       // drawer: DrawerMenu(),
