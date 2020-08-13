@@ -1,10 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:keeper/blocs/secret/secret.dart';
-import 'package:keeper/repositories/repositories.dart';
+import 'package:keeper/repositories/abstract_repository.dart';
+import 'package:keeper/repositories/firebaseio_repository.dart';
 import 'package:meta/meta.dart';
 
 class SecretBloc extends Bloc<SecretEvent, SecretState> {
-  final RedisSecretRepository secretRepository;
+  final AbstractRepository secretRepository;
 
   SecretBloc({@required this.secretRepository})
       : assert(secretRepository != null),
@@ -21,21 +22,31 @@ class SecretBloc extends Bloc<SecretEvent, SecretState> {
 
   Stream<SecretState> _mapSecretEncryptedToState(SecretEncrypted event) async* {
     yield SecretInProgress();
-    final id = await _saveSecret(event.secret.toEncryptedString());
-    final secret = event.secret.copyWith(id: id);
-    yield SecretEncryptSuccess(secret);
+    try {
+      final id = await _saveSecret(event.secret.toEncryptedString());
+      final secret = event.secret.copyWith(id: id);
+      yield SecretEncryptSuccess(secret);
+    } catch (e) {
+      yield SecretEncryptError();
+    }
   }
 
   Stream<SecretState> _mapSecretDecryptedToState(SecretDecrypted event) async* {
     yield SecretInProgress();
     // TODO: validate secret and yield error state if invalid
     final secretID = event.secret.id.split("#");
-    print(secretID);
-    final encryptedSecret = await _fetchSecret(secretID[0]);
-    final secret = event.secret
-        .copyWith(encryptedSecret: encryptedSecret, password: secretID[1]);
-    yield SecretDecryptSuccess(
-        secret.copyWith(unencryptedSecret: secret.toUnencryptedString()));
+
+    try {
+      final encryptedSecret = await _fetchSecret(secretID[0]);
+      final secret = event.secret
+          .copyWith(encryptedSecret: encryptedSecret, password: secretID[1]);
+      yield SecretDecryptSuccess(
+          secret.copyWith(unencryptedSecret: secret.toUnencryptedString()));
+    } on SecretNotFound catch (e) {
+      yield SecretDecryptNotFound();
+    } catch (e) {
+      yield SecretDecryptError();
+    }
   }
 
   Future<String> _saveSecret(String encryptedSecret) {

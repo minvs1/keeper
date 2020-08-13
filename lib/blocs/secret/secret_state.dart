@@ -35,3 +35,9 @@ class SecretDecryptSuccess extends SecretState {
   @override
   String toString() => 'SecretDecryptSuccess { secret: $secret }';
 }
+
+class SecretDecryptNotFound extends SecretState {}
+
+class SecretDecryptError extends SecretState {}
+
+class SecretEncryptError extends SecretState {}

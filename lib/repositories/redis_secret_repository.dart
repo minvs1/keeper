@@ -1,8 +1,9 @@
+import 'package:keeper/repositories/abstract_repository.dart';
 import 'package:meta/meta.dart';
 import 'package:dartis/dartis.dart' as redis;
 import 'package:nanoid/nanoid.dart';
 
-class RedisSecretRepository {
+class RedisSecretRepository implements AbstractRepository {
   static const _ID_PREFIX = 'id_';
   final String redisURL;
   redis.Client redisClient;

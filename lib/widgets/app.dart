@@ -1,10 +1,12 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:keeper/blocs/blocs.dart';
 
 import 'package:keeper/config/app_config.dart';
 import 'package:keeper/config/routes.dart';
+import 'package:keeper/repositories/firebaseio_repository.dart';
 import 'package:keeper/repositories/repositories.dart';
 
 class App extends StatelessWidget {
@@ -13,8 +15,8 @@ class App extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final RedisSecretRepository secretRepository =
-        RedisSecretRepository(redisURL: 'redis://localhost:6379');
+    final FirebaseioRepository secretRepository = FirebaseioRepository(
+        functionURL: DotEnv().env['FIREBASEIO_FUNCTION_URL']);
 
     final router = Router();
     Routes.configureRoutes(router);
