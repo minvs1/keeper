@@ -9,7 +9,7 @@ if (process.env.DOTENV) {
 const { SERVICE_ACCOUNT, DATABASE_URL } = process.env;
 
 if (!SERVICE_ACCOUNT || !DATABASE_URL) {
-  throw "Required env keys are missing";
+  throw new Error("Required env keys are missing");
 }
 
 const serviceAccount = JSON.parse(
@@ -73,7 +73,7 @@ export const get = functions.https.onRequest(async (request, response) => {
 
   const encryptedSecret = data.val();
 
-  if (encryptedSecret == null) {
+  if (encryptedSecret === null) {
     response.status(404).send("Not Found");
 
     return;
