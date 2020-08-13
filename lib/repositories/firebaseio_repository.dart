@@ -35,7 +35,6 @@ class FirebaseioRepository implements AbstractRepository {
   }
 
   Future<String> setSecret(String encryptedSecret) async {
-    print(this.functionURL);
     final response = await http.post(
       "${this.functionURL}/add",
       headers: <String, String>{
