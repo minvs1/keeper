@@ -22,6 +22,16 @@ admin.initializeApp({
 });
 
 export const add = functions.https.onRequest(async (request, response) => {
+  response.set("Access-Control-Allow-Origin", "*");
+  response.set("Access-Control-Allow-Headers", "*");
+  response.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+
+  if (request.method === "OPTIONS") {
+    response.end();
+
+    return;
+  }
+
   const id = nanoid(21);
 
   const { encrypted_secret } = request.body;
@@ -39,6 +49,16 @@ export const add = functions.https.onRequest(async (request, response) => {
 });
 
 export const get = functions.https.onRequest(async (request, response) => {
+  response.set("Access-Control-Allow-Origin", "*");
+  response.set("Access-Control-Allow-Headers", "*");
+  response.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+
+  if (request.method === "OPTIONS") {
+    response.end();
+
+    return;
+  }
+
   const { id } = request.body;
 
   if (!id) {
