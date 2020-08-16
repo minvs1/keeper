@@ -10,15 +10,14 @@ class SecretNotFound implements Exception {
   SecretNotFound(this.cause);
 }
 
-class FirebaseioRepository implements AbstractRepository {
-  final String functionURL;
+class HttpRepository implements AbstractRepository {
+  final String url;
 
-  FirebaseioRepository({@required this.functionURL})
-      : assert(functionURL != null);
+  HttpRepository({@required this.url}) : assert(url != null);
 
   Future<String> getSecret(String id) async {
     final response = await http.post(
-      "${this.functionURL}/get",
+      "${this.url}/get",
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -36,7 +35,7 @@ class FirebaseioRepository implements AbstractRepository {
 
   Future<String> setSecret(String encryptedSecret) async {
     final response = await http.post(
-      "${this.functionURL}/add",
+      "${this.url}/add",
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

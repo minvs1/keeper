@@ -1,22 +1,23 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:keeper/blocs/blocs.dart';
+import 'package:flutter/foundation.dart' as Foundation;
 
+import 'package:keeper/blocs/blocs.dart';
 import 'package:keeper/config/app_config.dart';
 import 'package:keeper/config/routes.dart';
-import 'package:keeper/repositories/firebaseio_repository.dart';
-import 'package:keeper/repositories/repositories.dart';
+import 'package:keeper/repositories/http_repository.dart';
 
 class App extends StatelessWidget {
   final appConfig = AppConfig();
+  final httpURL = Foundation.kDebugMode
+      ? 'http://localhost:5001/keeper-658e3/us-central1'
+      : 'https://us-central1-keeper-658e3.cloudfunctions.net';
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final FirebaseioRepository secretRepository = FirebaseioRepository(
-        functionURL: DotEnv().env['FIREBASEIO_FUNCTION_URL']);
+    final HttpRepository secretRepository = HttpRepository(url: httpURL);
 
     final router = Router();
     Routes.configureRoutes(router);

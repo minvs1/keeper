@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:keeper/blocs/secret/secret.dart';
 import 'package:keeper/repositories/abstract_repository.dart';
-import 'package:keeper/repositories/firebaseio_repository.dart';
+import 'package:keeper/repositories/http_repository.dart';
 import 'package:meta/meta.dart';
 
 class SecretBloc extends Bloc<SecretEvent, SecretState> {
