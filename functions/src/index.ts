@@ -2,23 +2,15 @@ import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import { nanoid } from "nanoid";
 
-if (process.env.DOTENV) {
-  require("dotenv").config();
-}
-
-const { SERVICE_ACCOUNT, DATABASE_URL } = process.env;
-
-if (!SERVICE_ACCOUNT || !DATABASE_URL) {
-  throw new Error("Required env keys are missing");
-}
-
 const serviceAccount = JSON.parse(
-  Buffer.from(SERVICE_ACCOUNT, "base64").toString("utf-8")
+  Buffer.from(functions.config().keeper.service_account, "base64").toString(
+    "utf-8"
+  )
 );
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: DATABASE_URL,
+  databaseURL: functions.config().keeper.database_url,
 });
 
 export const add = functions.https.onRequest(async (request, response) => {
