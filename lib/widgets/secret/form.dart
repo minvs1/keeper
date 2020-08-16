@@ -53,6 +53,31 @@ class SecretForm extends StatelessWidget {
                   expands: true,
                   textAlignVertical: TextAlignVertical.top,
                   decoration: InputDecoration(
+                    suffixIcon: Container(
+                        alignment: Alignment.topRight,
+                        width: 50,
+                        child: PopupMenuButton(
+                            icon: Icon(Icons.more_vert),
+                            itemBuilder: (_) => [
+                                  new PopupMenuItem(
+                                      child: const Text('Copy'), value: 'copy'),
+                                  new PopupMenuItem(
+                                      child: const Text('Paste'),
+                                      value: 'paste'),
+                                ],
+                            onSelected: (item) async {
+                              switch (item) {
+                                case 'copy':
+                                  Clipboard.setData(ClipboardData(
+                                      text: secretController.text));
+                                  break;
+                                case 'paste':
+                                  ClipboardData data =
+                                      await Clipboard.getData('text/plain');
+                                  secretController.text = data.text;
+                                  break;
+                              }
+                            })),
                     alignLabelWithHint: true,
                     labelText: labelText,
                     border: OutlineInputBorder(),
