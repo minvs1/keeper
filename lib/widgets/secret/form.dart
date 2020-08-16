@@ -59,11 +59,11 @@ class SecretForm extends StatelessWidget {
                         child: PopupMenuButton(
                             icon: Icon(Icons.more_vert),
                             itemBuilder: (_) => [
-                                  new PopupMenuItem(
-                                      child: const Text('Copy'), value: 'copy'),
-                                  new PopupMenuItem(
-                                      child: const Text('Paste'),
-                                      value: 'paste'),
+                                  PopupMenuItem(
+                                      child: Text('Copy'), value: 'copy'),
+                                  if (!done)
+                                    PopupMenuItem(
+                                        child: Text('Paste'), value: 'paste'),
                                 ],
                             onSelected: (item) async {
                               switch (item) {
@@ -72,6 +72,10 @@ class SecretForm extends StatelessWidget {
                                       text: secretController.text));
                                   break;
                                 case 'paste':
+                                  if (done) {
+                                    return;
+                                  }
+
                                   ClipboardData data =
                                       await Clipboard.getData('text/plain');
                                   secretController.text = data.text;
