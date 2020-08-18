@@ -22,88 +22,99 @@ class SecretForm extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Center(
-      child: Container(
-        margin: EdgeInsets.only(
-          left: 15.0,
-          top: 15.0,
-          right: 15.0,
-          bottom: 15.0, // Fix incorrectness
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            if (done)
-              Button(
-                child: Text('GO BACK'),
-                margin: EdgeInsets.only(bottom: 10.0),
-                onPressed: () async {
-                  context.bloc<RouterBloc>().add(RouterNavigated(context, '/'));
-                },
-              ),
-            Expanded(
-              child: Container(
-                child: TextField(
-                  readOnly: done,
-                  controller: secretController,
-                  keyboardType: TextInputType.multiline,
-                  cursorColor: theme.accentColor,
-                  maxLines: null,
-                  expands: true,
-                  textAlignVertical: TextAlignVertical.top,
-                  decoration: InputDecoration(
-                    suffixIcon: Container(
-                        alignment: Alignment.topRight,
-                        width: 50,
-                        child: PopupMenuButton(
-                            icon: Icon(Icons.more_vert),
-                            itemBuilder: (_) => [
-                                  PopupMenuItem(
-                                      child: Text('Copy'), value: 'copy'),
-                                  if (!done)
-                                    PopupMenuItem(
-                                        child: Text('Paste'), value: 'paste'),
-                                ],
-                            onSelected: (item) async {
-                              switch (item) {
-                                case 'copy':
-                                  Clipboard.setData(ClipboardData(
-                                      text: secretController.text));
-                                  break;
-                                case 'paste':
-                                  if (done) {
-                                    return;
-                                  }
+    return BlocBuilder<SecretBloc, SecretState>(
+      builder: (context, state) {
+        if (state is SecretInProgress) {
+          return Center(child: CircularProgressIndicator());
+        }
 
-                                  ClipboardData data =
-                                      await Clipboard.getData('text/plain');
-                                  secretController.text = data.text;
-                                  break;
-                              }
-                            })),
-                    alignLabelWithHint: true,
-                    labelText: labelText,
-                    border: OutlineInputBorder(),
+        return Center(
+          child: Container(
+            margin: EdgeInsets.only(
+              left: 15.0,
+              top: 15.0,
+              right: 15.0,
+              bottom: 15.0, // Fix incorrectness
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                if (done)
+                  Button(
+                    child: Text('GO BACK'),
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    onPressed: () async {
+                      context
+                          .bloc<RouterBloc>()
+                          .add(RouterNavigated(context, '/'));
+                    },
+                  ),
+                Expanded(
+                  child: Container(
+                    child: TextField(
+                      readOnly: done,
+                      controller: secretController,
+                      keyboardType: TextInputType.multiline,
+                      cursorColor: theme.accentColor,
+                      maxLines: null,
+                      expands: true,
+                      textAlignVertical: TextAlignVertical.top,
+                      decoration: InputDecoration(
+                        suffixIcon: Container(
+                            alignment: Alignment.topRight,
+                            width: 50,
+                            child: PopupMenuButton(
+                                icon: Icon(Icons.more_vert),
+                                itemBuilder: (_) => [
+                                      PopupMenuItem(
+                                          child: Text('Copy'), value: 'copy'),
+                                      if (!done)
+                                        PopupMenuItem(
+                                            child: Text('Paste'),
+                                            value: 'paste'),
+                                    ],
+                                onSelected: (item) async {
+                                  switch (item) {
+                                    case 'copy':
+                                      Clipboard.setData(ClipboardData(
+                                          text: secretController.text));
+                                      break;
+                                    case 'paste':
+                                      if (done) {
+                                        return;
+                                      }
+
+                                      ClipboardData data =
+                                          await Clipboard.getData('text/plain');
+                                      secretController.text = data.text;
+                                      break;
+                                  }
+                                })),
+                        alignLabelWithHint: true,
+                        labelText: labelText,
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-            if (!done)
-              Button(
-                child: Text(submitText),
-                margin: EdgeInsets.only(top: 10.0),
-                onPressed: () async {
-                  if (secretController.text == "") {
-                    return;
-                  }
+                if (!done)
+                  Button(
+                    child: Text(submitText),
+                    margin: EdgeInsets.only(top: 10.0),
+                    onPressed: () async {
+                      if (secretController.text == "") {
+                        return;
+                      }
 
-                  onSubmit();
-                },
-              ),
-          ],
-        ),
-      ),
+                      onSubmit();
+                    },
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

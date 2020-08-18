@@ -34,28 +34,20 @@ class _NewSecret extends State<NewSecret> {
               // TODO: handle errors
             }
           },
-          child: BlocBuilder<SecretBloc, SecretState>(
-            builder: (context, state) {
-              if (state is SecretInProgress) {
-                return Center(child: CircularProgressIndicator());
-              }
-
-              return SecretForm(
-                  submitText: 'SHARE IT!',
-                  labelText: _isEncrypted
-                      ? 'Tell me a secret...'
-                      : 'Your secret is safe',
-                  secretController: secretController,
-                  done: _isEncrypted,
-                  onSubmit: () {
-                    context.bloc<SecretBloc>().add(
-                          SecretEncrypted(
-                            Secret(
-                              unencryptedSecret: secretController.text,
-                            ),
-                          ),
-                        );
-                  });
+          child: SecretForm(
+            submitText: 'SHARE IT!',
+            labelText:
+                _isEncrypted ? 'Tell me a secret...' : 'Your secret is safe',
+            secretController: secretController,
+            done: _isEncrypted,
+            onSubmit: () {
+              context.bloc<SecretBloc>().add(
+                    SecretEncrypted(
+                      Secret(
+                        unencryptedSecret: secretController.text,
+                      ),
+                    ),
+                  );
             },
           ),
         ),

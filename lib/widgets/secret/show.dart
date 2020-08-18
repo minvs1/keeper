@@ -29,25 +29,20 @@ class _ShowSecretState extends State<ShowSecret> {
             // TODO: handle errors
           }
         },
-        child: BlocBuilder<SecretBloc, SecretState>(
-          builder: (context, state) {
-            return SecretForm(
-              submitText: 'UNLOCK IT!',
-              labelText: _isDecrypted
-                  ? 'Your secret is revealed'
-                  : 'Enter secret ID...',
-              secretController: secretController,
-              done: _isDecrypted,
-              onSubmit: () {
-                context.bloc<SecretBloc>().add(
-                      SecretDecrypted(
-                        Secret(
-                          id: secretController.text,
-                        ),
-                      ),
-                    );
-              },
-            );
+        child: SecretForm(
+          submitText: 'UNLOCK IT!',
+          labelText:
+              _isDecrypted ? 'Your secret is revealed' : 'Enter secret ID...',
+          secretController: secretController,
+          done: _isDecrypted,
+          onSubmit: () {
+            context.bloc<SecretBloc>().add(
+                  SecretDecrypted(
+                    Secret(
+                      id: secretController.text,
+                    ),
+                  ),
+                );
           },
         ),
       ),
