@@ -1,0 +1,23 @@
+name: Build & Deploy Web
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v1
+        with:
+          channel: "beta"
+      - run: flutter config --enable-web
+      - run: flutter pub get
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
