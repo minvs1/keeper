@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:fluro/fluro.dart';
+import 'package:fluro/fluro.dart' as fluro;
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
@@ -38,7 +38,7 @@ class RouterState extends Equatable {
 }
 
 class RouterBloc extends Bloc<RouterEvent, RouterState> {
-  final Router router;
+  final fluro.Router router;
 
   RouterBloc({@required this.router})
       : assert(router != null),
@@ -51,7 +51,7 @@ class RouterBloc extends Bloc<RouterEvent, RouterState> {
           .navigateTo(
             event.context,
             event.path,
-            transition: TransitionType.fadeIn,
+            transition: fluro.TransitionType.fadeIn,
           )
           .then((value) => Navigator.pop(event.context));
 

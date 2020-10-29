@@ -1,4 +1,4 @@
-import 'package:fluro/fluro.dart';
+import 'package:fluro/fluro.dart' as fluro;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart' as Foundation;
@@ -19,7 +19,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     final HttpRepository secretRepository = HttpRepository(url: httpURL);
 
-    final router = Router();
+    final router = fluro.Router();
     Routes.configureRoutes(router);
 
     return MultiBlocProvider(
